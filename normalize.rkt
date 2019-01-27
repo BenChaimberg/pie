@@ -474,6 +474,9 @@
                     (later ρ mot)
                     (later ρ l)
                     (later ρ r))]
+    [`(Tree ,E) (TREE (later ρ E))]
+    [`(node ,v ,l ,r) (NODE (later ρ v) (later ρ l)  (later ρ r))]
+    ['leaf 'LEAF]
     [`(,rator ,rand)
      (do-ap (later ρ rator) (later ρ rand))]
     [`(TODO ,where ,type)
@@ -558,6 +561,7 @@
      `(Vec ,(read-back-type Γ Ev) ,(read-back Γ 'NAT lenv))]
     [(EITHER Lv Rv)
      `(Either ,(read-back-type Γ Lv) ,(read-back-type Γ Rv))]
+    [(TREE E) `(Tree ,(read-back-type Γ E))]
     [(NEU UNIVERSE ne)
      (read-back-neutral Γ ne)]))
 
@@ -607,6 +611,9 @@
      `(left ,(read-back Γ Lv lv))]
     [((EITHER Lv Rv) (RIGHT rv))
      `(right ,(read-back Γ Rv rv))]
+    [((TREE E) (NODE v l r))
+     `(node ,(read-back Γ E v) ,(read-back Γ (TREE E) l) ,(read-back Γ (TREE E) r))]
+    [((TREE E) 'LEAF) 'leaf]
     [(_ (NEU _ ne))
      (read-back-neutral Γ ne)]))
 

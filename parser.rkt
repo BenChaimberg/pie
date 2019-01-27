@@ -98,6 +98,18 @@
   (@ (syntax->srcloc loc) `(Either ,L ,R)))
 
 
+(define (make-Tree loc E)
+  (@ (syntax->srcloc loc) `(Tree ,E)))
+
+
+(define (make-node loc v l r)
+  (@ (syntax->srcloc loc) `(node ,v ,l ,r)))
+
+
+(define (make-leaf loc)
+  (@ (syntax->srcloc loc) 'leaf))
+
+
 (define (make-nil loc)
   (@ (syntax->srcloc loc) 'nil))
 
@@ -245,6 +257,7 @@
                       = same replace symm trans cong ind-=
                       head tail Vec vec:: vecnil ind-Vec
                       Either left right ind-Either
+                      Tree node leaf
                       TODO)
     [U
      (make-U stx)]
@@ -384,6 +397,12 @@
      (make-right stx (parse-pie #'r))]
     [(ind-Either ~! tgt mot l r)
      (make-ind-Either stx (parse-pie #'tgt) (parse-pie #'mot) (parse-pie #'l) (parse-pie #'r))]
+    [(Tree ~! E)
+     (make-Tree stx (parse-pie #'E))]
+    [(node ~! v l r)
+     (make-node stx (parse-pie #'v) (parse-pie #'l) (parse-pie #'r))]
+    [leaf
+     (make-leaf stx)]
     [(~describe "TODO" TODO)
      (make-TODO stx)]
     [(~describe "function application"
@@ -446,6 +465,7 @@
                       = same replace symm trans cong ind-=
                       head tail Vec vec:: vecnil ind-Vec
                       Either left right ind-Either
+                      Tree node leaf
                       TODO)
     [U
      (add-disappeared (syntax/loc stx kw:U)
@@ -741,6 +761,21 @@
                    [ind-Either/loc (syntax/loc (car (syntax-e stx)) kw:ind-Either)])
        (add-disappeared (syntax/loc stx (void ind-Either/loc tgt* mot* l* r*))
                         (car (syntax-e stx))))]
+    [(Tree ~! E)
+     (with-syntax ([E* #'(pie->binders E)]
+                   [Tree/loc (syntax/loc (car (syntax-e stx)) kw:Tree)])
+       (add-disappeared (syntax/loc stx (void Tree/loc E*))
+                        (car (syntax-e stx))))]
+    [(node ~! v l r)
+     (with-syntax ([v* #'(pie->binders v)]
+                   [l* #'(pie->binders l)]
+                   [r* #'(pie->binders r)]
+                   [node/loc (syntax/loc (car (syntax-e stx)) kw:node)])
+       (add-disappeared (syntax/loc stx (void node/loc v* l* r*))
+                        (car (syntax-e stx))))]
+    [leaf
+     (add-disappeared (syntax/loc stx kw:leaf)
+                      stx)]
     [(~describe "TODO" TODO)
      (add-disappeared (syntax/loc stx kw:TODO)
                       stx)]

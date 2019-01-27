@@ -176,6 +176,9 @@
       (go-on ((L-out (is-type Γ r L))
               (R-out (is-type Γ r R)))
         (go `(Either ,L-out ,R-out)))]
+     [`(Tree ,E)
+      (go-on ((E-out (is-type Γ r E)))
+        (go `(Tree ,E-out)))]
      [other
       (match (check Γ r (@ (src-loc in) other) 'UNIVERSE)
         [(go t-out)
@@ -593,6 +596,14 @@
            (stop (src-loc e)
                  `("Expected an Either, but got a"
                    ,(read-back-type Γ non-Either)))]))]
+     [`(Tree ,E)
+      (go-on ((E-out (check Γ r E 'UNIVERSE)))
+        (go `(the U (Tree ,E-out))))]
+     [`(node ,v ,left ,right)
+      (go-on ((`(the ,E ,v-out) (synth Γ r v))
+              (left-out (check Γ r left (val-in-ctx Γ `(Tree ,E))))
+              (right-out (check Γ r right (val-in-ctx Γ `(Tree ,E)))))
+        (go `(the (Tree ,E) (node ,v-out ,left-out ,right-out))))]
      [`(the ,t ,e)
       (go-on ((t-out (is-type Γ r t))
               (e-out (check Γ r e (val-in-ctx Γ t-out))))
@@ -770,6 +781,14 @@
                `("right constructs an Either, but it was used where a"
                  ,(read-back-type Γ non-Either)
                  "was expected."))])]
+     ['leaf
+      (match (now tv)
+        [(TREE E)
+         (go 'leaf)]
+        [non-Tree
+         (stop (src-loc e)
+               `("leaf requires a Tree type, but was used as a"
+                 ,(read-back-type Γ non-Tree)))])]
      ['TODO
       (let ((ty (read-back-type Γ tv)))
         (begin (send-pie-info (src-loc e) `(TODO ,(read-back-ctx Γ) ,ty))

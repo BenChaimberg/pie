@@ -48,6 +48,7 @@
      '= 'same 'replace 'trans 'cong 'symm 'ind-=
      'Vec 'vecnil 'vec:: 'head 'tail 'ind-Vec
      'Either 'left 'right 'ind-Either
+     'Tree 'node 'leaf
      'TODO 'the))
 
 
@@ -128,6 +129,9 @@
      (List 'left Src)
      (List 'right Src)
      (List 'ind-Either Src Src Src Src)
+     (List 'Tree Src)
+     (List 'node Src Src Src)
+     'leaf
      'TODO
      (List* Src Src (Listof Src))))
 
@@ -178,6 +182,9 @@
      (List 'left Core)
      (List 'right Core)
      (List 'ind-Either Core Core Core Core)
+     (List 'Tree Core)
+     (List 'node Core Core Core)
+     'leaf
      (List 'TODO Srcloc Core)
      (List Core Core)))
 
@@ -226,6 +233,8 @@
 (struct EITHER ([left-type : Value] [right-type : Value]) #:transparent)
 (struct LEFT ([value : Value]) #:transparent)
 (struct RIGHT ([value : Value]) #:transparent)
+(struct TREE ([entry-type : Value]) #:transparent)
+(struct NODE ([value : Value] [left : Value] [right : Value]) #:transparent)
 (struct NEU ([type : Value] [neutral : Neutral]) #:transparent)
 (define-type Value
   (U 'UNIVERSE
@@ -239,6 +248,7 @@
      EQUAL SAME
      VEC 'VECNIL VEC::
      EITHER LEFT RIGHT
+     TREE NODE 'LEAF
      NEU
      DELAY))
 
@@ -390,6 +400,7 @@
            (eqv? x 'head) (eqv? x 'tail) (eqv? x 'ind-Vec)
            (eqv? x 'Either) (eqv? x 'left) (eqv? x 'right)
            (eqv? x 'ind-Either) (eqv? x 'the)
+           (eqv? x 'Tree) (eqv? x 'node) (eqv? x 'leaf)
            (eqv? x 'TODO))))
 
 

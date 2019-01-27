@@ -31,5 +31,6 @@
   = same replace trans cong symm ind-=
   Vec vecnil vec:: head tail ind-Vec
   Either left right ind-Either
+  Tree node leaf
   TODO the
   check-same claim define)

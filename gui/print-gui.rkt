@@ -187,12 +187,12 @@
           #f))
 
     (define (tycon? x)
-      (if (memv x '(U Π Pi Σ Sigma Nat Atom Absurd Trivial Pair -> Vec List Either))
+      (if (memv x '(U Π Pi Σ Sigma Nat Atom Absurd Trivial Pair -> Vec List Either Tree))
           #t
           #f))
 
     (define (con? x)
-      (if (memv x '(cons λ lambda add1 zero :: vec:: nil vecnil sole left right))
+      (if (memv x '(cons λ lambda add1 zero :: vec:: nil vecnil sole left right node leaf))
           #t
           #f))
 

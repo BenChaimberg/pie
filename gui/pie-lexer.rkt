@@ -402,12 +402,13 @@
                "Atom"
                "Nat"
                "Vec" "List"
+               "Tree"
                "Trivial"
                "Absurd"
                "=")
               'type-ctor]
              [("lambda" "λ" "cons" "left" "right" "sole" "zero" "add1" "same"
-                        "::" "vec::" "vecnil" "nil")
+                        "::" "vec::" "vecnil" "nil" "node" "leaf")
               'data-ctor]
              [else 'symbol])))
       (ret lexeme category #f start-pos end-pos 'datum))]

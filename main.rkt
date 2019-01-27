@@ -41,6 +41,7 @@
                      [kw:= =] [kw:same same] [kw:replace replace] [kw:trans trans] [kw:cong cong] [kw:symm symm]
                      [kw:Vec Vec] [kw:vecnil vecnil] [kw:vec:: vec::] [kw:head head] [kw:tail tail] [kw:ind-Vec ind-Vec]
                      [kw:Either Either] [kw:left left] [kw:right right] [kw:ind-Either ind-Either]
+                     [kw:Tree Tree] [kw:node node] [kw:leaf leaf]
                      [kw:TODO TODO] [kw:the the]
                      [kw:claim claim] [kw:define define] [kw:check-same check-same])
          (all-from-out "pie-info.rkt")
