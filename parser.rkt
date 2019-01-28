@@ -188,6 +188,10 @@
   (@ (syntax->srcloc loc) `(ind-Vec ,e1 ,e2 ,e3 ,e4 ,e5)))
 
 
+(define (make-ind-Tree loc e1 e2 e3 e4)
+  (@ (syntax->srcloc loc) `(ind-Tree ,e1 ,e2 ,e3 ,e4)))
+
+
 (define (make-= loc e1 e2 e3)
   (@ (syntax->srcloc loc) `(= ,e1 ,e2 ,e3)))
 
@@ -257,7 +261,7 @@
                       = same replace symm trans cong ind-=
                       head tail Vec vec:: vecnil ind-Vec
                       Either left right ind-Either
-                      Tree node leaf
+                      Tree node leaf ind-Tree
                       TODO)
     [U
      (make-U stx)]
@@ -403,6 +407,8 @@
      (make-node stx (parse-pie #'v) (parse-pie #'l) (parse-pie #'r))]
     [leaf
      (make-leaf stx)]
+    [(ind-Tree ~! tgt mot b s)
+     (make-ind-Tree stx (parse-pie #'tgt) (parse-pie #'mot) (parse-pie #'b) (parse-pie #'s))]
     [(~describe "TODO" TODO)
      (make-TODO stx)]
     [(~describe "function application"
@@ -465,7 +471,7 @@
                       = same replace symm trans cong ind-=
                       head tail Vec vec:: vecnil ind-Vec
                       Either left right ind-Either
-                      Tree node leaf
+                      Tree node leaf ind-Tree
                       TODO)
     [U
      (add-disappeared (syntax/loc stx kw:U)
@@ -776,6 +782,14 @@
     [leaf
      (add-disappeared (syntax/loc stx kw:leaf)
                       stx)]
+    [(ind-Tree ~! tgt mot b s)
+     (with-syntax ([tgt* #'(pie->binders tgt)]
+                   [mot* #'(pie->binders mot)]
+                   [b* #'(pie->binders b)]
+                   [s* #'(pie->binders s)]
+                   [ind-Tree/loc (syntax/loc (car (syntax-e stx)) kw:ind-Tree)])
+       (add-disappeared (syntax/loc stx (void ind-Tree/loc tgt* mot* b* s*))
+                        (car (syntax-e stx))))]
     [(~describe "TODO" TODO)
      (add-disappeared (syntax/loc stx kw:TODO)
                       stx)]

@@ -48,7 +48,7 @@
      '= 'same 'replace 'trans 'cong 'symm 'ind-=
      'Vec 'vecnil 'vec:: 'head 'tail 'ind-Vec
      'Either 'left 'right 'ind-Either
-     'Tree 'node 'leaf
+     'Tree 'node 'leaf 'ind-Tree
      'TODO 'the))
 
 
@@ -132,6 +132,7 @@
      (List 'Tree Src)
      (List 'node Src Src Src)
      'leaf
+     (List 'ind-Tree Src Src Src Src)
      'TODO
      (List* Src Src (Listof Src))))
 
@@ -185,6 +186,7 @@
      (List 'Tree Core)
      (List 'node Core Core Core)
      'leaf
+     (List 'ind-Tree Core Core Core Core)
      (List 'TODO Srcloc Core)
      (List Core Core)))
 
@@ -308,6 +310,11 @@
                       [base-left : Norm]
                       [base-right : Norm])
   #:transparent)
+(struct N-ind-Tree ([target : Neutral]
+                    [motive : Norm]
+                    [base : Norm]
+                    [step : Norm])
+  #:transparent)
 (struct N-ap ([rator : Neutral] [rand : Norm]) #:transparent)
 
 (define-type Neutral
@@ -319,6 +326,7 @@
      N-replace N-trans1 N-trans2 N-trans12 N-cong N-symm N-ind-=
      N-head N-tail N-ind-Vec1 N-ind-Vec2 N-ind-Vec12
      N-ind-Either
+     N-ind-Tree
      N-ap))
 
 (define-predicate Neutral? Neutral)
@@ -401,6 +409,7 @@
            (eqv? x 'Either) (eqv? x 'left) (eqv? x 'right)
            (eqv? x 'ind-Either) (eqv? x 'the)
            (eqv? x 'Tree) (eqv? x 'node) (eqv? x 'leaf)
+           (eqv? x 'ind-Tree)
            (eqv? x 'TODO))))
 
 

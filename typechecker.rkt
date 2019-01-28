@@ -604,6 +604,35 @@
               (left-out (check Γ r left (val-in-ctx Γ `(Tree ,E))))
               (right-out (check Γ r right (val-in-ctx Γ `(Tree ,E)))))
         (go `(the (Tree ,E) (node ,v-out ,left-out ,right-out))))]
+     [`(ind-Tree ,tgt ,mot ,b ,s)
+      (go-on ((`(the ,tgt-t ,tgt-out) (synth Γ r tgt)))
+        (match (val-in-ctx Γ tgt-t)
+          [(TREE E)
+           (go-on ((mot-out (check
+                             Γ
+                             r
+                             mot
+                             (PI 't (TREE E) (FO-CLOS (ctx->env Γ) 't 'U))))
+                   (mot-val (go (val-in-ctx Γ mot-out)))
+                   (b-out (check Γ r b (do-ap mot-val 'LEAF)))
+                   (s-out
+                    (check Γ
+                           r
+                           s
+                           (Π-type ((v E)
+                                    (l (TREE E))
+                                    (r (TREE E))
+                                    (ih-l (do-ap mot-val l))
+                                    (ih-r (do-ap mot-val r)))
+                                   (do-ap mot-val (NODE v l r))))))
+             (go `(the (,mot-out ,tgt-out)
+                       (ind-Tree ,tgt-out
+                                 ,mot-out
+                                 ,b-out
+                                 ,s-out))))]
+          [other (stop (src-loc e)
+                       `("Not Tree: "
+                         ,(read-back-type Γ other)))]))]
      [`(the ,t ,e)
       (go-on ((t-out (is-type Γ r t))
               (e-out (check Γ r e (val-in-ctx Γ t-out))))

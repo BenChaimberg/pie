@@ -41,7 +41,7 @@
                      [kw:= =] [kw:same same] [kw:replace replace] [kw:trans trans] [kw:cong cong] [kw:symm symm]
                      [kw:Vec Vec] [kw:vecnil vecnil] [kw:vec:: vec::] [kw:head head] [kw:tail tail] [kw:ind-Vec ind-Vec]
                      [kw:Either Either] [kw:left left] [kw:right right] [kw:ind-Either ind-Either]
-                     [kw:Tree Tree] [kw:node node] [kw:leaf leaf]
+                     [kw:Tree Tree] [kw:node node] [kw:leaf leaf] [kw:ind-Tree ind-Tree]
                      [kw:TODO TODO] [kw:the the]
                      [kw:claim claim] [kw:define define] [kw:check-same check-same])
          (all-from-out "pie-info.rkt")
@@ -64,7 +64,7 @@
     (match t
       [`(,c . ,_)
        (case c
-         [(-> → Either = add1 iter-Nat ind-Nat ind-List ind-Absurd ind-Vec ind-Either)
+         [(-> → Either = add1 iter-Nat ind-Nat ind-List ind-Absurd ind-Vec ind-Either ind-Tree)
           "an"]
          [else "a"])]
       ['Atom "an"]
@@ -293,7 +293,7 @@
                             [(or 'which-Nat 'iter-Nat 'rec-Nat 'ind-Nat
                                  'car 'cdr 'rec-List 'ind-List 'ind-Absurd
                                  'replace 'cong 'trans 'symm 'head 'tail 'ind-Vec
-                                 'ind-Either)
+                                 'ind-Either 'ind-Tree)
                              (define target-count
                                (match real-op
                                  [(or 'trans 'ind-Vec) 2]

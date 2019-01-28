@@ -377,6 +377,29 @@
                                        (do-ap mot (RIGHT x)))
                                r))))]))
 
+(: do-ind-Tree (-> Value Value Value Value Value))
+(define (do-ind-Tree tgt-v mot-v b-v s-v)
+  (match (now tgt-v)
+    ['LEAF b-v]
+    [(NODE v l r)
+     (do-ap (do-ap (do-ap (do-ap (do-ap s-v v) l) r)
+                   (do-ind-Tree l mot-v b-v s-v))
+            (do-ind-Tree r mot-v b-v s-v))]
+    [(NEU (!! (TREE E)) ne)
+     (let ([mot-tv (Π-type ((t (TREE E))) 'UNIVERSE)])
+       (NEU (do-ap mot-v tgt-v)
+            (N-ind-Tree
+             ne
+             (THE mot-tv mot-v)
+             (THE (do-ap mot-v 'LEAF) b-v)
+             (THE (Π-type ((v E)
+                           (l (TREE E))
+                           (r (TREE E))
+                           (ih-l (do-ap mot-v l))
+                           (ih-r (do-ap mot-v r)))
+                          (do-ap mot-v (NODE v l r)))
+                  s-v))))]))
+
 ;; The main evaluator is val-of. Instead of calling itself
 ;; recursively, it uses later to delay the evaluation of expressions
 ;; other than the outermost constructor or type constructor.
@@ -477,6 +500,11 @@
     [`(Tree ,E) (TREE (later ρ E))]
     [`(node ,v ,l ,r) (NODE (later ρ v) (later ρ l)  (later ρ r))]
     ['leaf 'LEAF]
+    [`(ind-Tree ,tgt ,mot ,b ,s)
+     (do-ind-Tree (later ρ tgt)
+                  (later ρ mot)
+                  (later ρ b)
+                  (later ρ s))]
     [`(,rator ,rand)
      (do-ap (later ρ rator) (later ρ rand))]
     [`(TODO ,where ,type)
@@ -711,6 +739,11 @@
                   ,(read-back Γ mot-tv mot-v)
                   ,(read-back Γ l-tv l-v)
                   ,(read-back Γ r-tv r-v))]
+    [(N-ind-Tree tgt (THE mot-t mot) (THE b-t b) (THE s-t s))
+     `(ind-Tree ,(read-back-neutral Γ tgt)
+                ,(read-back Γ mot-t mot)
+                ,(read-back Γ b-t b)
+                ,(read-back Γ s-t s))]
     [(N-ap tgt (THE arg-tv arg-v))
      `(,(read-back-neutral Γ tgt)
        ,(read-back Γ arg-tv arg-v))]
