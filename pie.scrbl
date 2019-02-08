@@ -309,7 +309,7 @@ The second projection of a pair. If @pie[p] is a @pie[(Σ ((_x _A)) _D)], then
                                    (-> (motive es)
                                      (motive (:: e es))))])
                  (motive target)]{
- @pie[ind-List] is induction on lists. When @pie[target] is a @pie[(List _E)], t
+ @pie[ind-List] is induction on lists. When @pie[target] is a @pie[(List _E)],
  the whole expression's type is @pie[(motive target)], the type of
  @pie[base] is @pie[(motive nil)], and the type of @pie[step] is
  @pieblock[(Π ((e _E)
@@ -392,6 +392,53 @@ The second projection of a pair. If @pie[p] is a @pie[(Σ ((_x _A)) _D)], then
                (es (Vec _E k)))
              (→ (motive k es)
                (motive (add1 k) (vec:: e es))))]
+}
+
+@subsection{Trees}
+@def-type-constructor[(Tree E)]{
+  @pie[(Tree E)] is the type of binary trees in which all values are @pie[E]s.
+}
+@def-constructor[leaf (Tree _E)]{
+ @ex[(the (Tree Atom) leaf)
+     (eval:error leaf)
+     (the (Tree (→ Nat
+                  Nat))
+       leaf)]
+}
+@def-constructor[(node [e _E] [l (Tree _E)] [r (Tree _E)]) (Tree _E)]{
+  @ex[(node 2 (node 1 leaf leaf) (node 3 leaf leaf))
+      (node 'a leaf (node 'b leaf leaf))
+      (eval:error (node 0 (node 'one leaf leaf) (node 2 leaf leaf)))]
+}
+
+@def-eliminator[(ind-Tree [target (Tree _E)]
+                           [motive (-> (Tree _E) U)]
+                           [base (motive leaf)]
+                           [step (Π ((v _E)
+                                     (l (Tree _E))
+                                     (r (Tree _E)))
+                                   (-> (motive l) (motive r)
+                                     (motive (node v l r))))])
+                 (motive target)]{
+ @pie[ind-Tree] is induction on trees. When @pie[target] is a @pie[(Tree _E)],
+ the whole expression's type is @pie[(motive target)], the type of
+ @pie[base] is @pie[(motive leaf)], the type of @pie[step] is
+ @pieblock[(Π ((v _E)
+               (l (Tree _E))
+               (r (Tree _E)))
+             (→ (motive l) (motive r)
+               (motive (node v l r))))]
+ and the result is
+ @pieblock[(step _v _l _r
+             (ind-Tree _l motive base step)
+	     (ind-Tree _r motive base step))]
+ 
+ @ex[(ind-Tree (node 'a
+                 (node 'b leaf leaf)
+		 (node 'c leaf leaf))
+       (λ (x) (Tree Atom))
+       leaf
+       (λ (v l r il ir) l))]
 }
 
 @subsection{Either}
